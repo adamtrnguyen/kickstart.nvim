@@ -50,6 +50,9 @@ return { -- Useful plugin to show you pending keybinds.
       { '<leader>c', group = '[C]laude Code' },
       { '<leader>o', group = '[O]pen LLM' },
       { '<leader>r', group = '[R]un' },
+      { '<leader>x', group = 'Diagnostics (Trouble)' },
+      { '<leader>g', group = '[G]it' },
+      { '<leader>l', group = '[L]azy' },
     },
   },
 }

@@ -4,8 +4,7 @@ return {
   dependencies = {
     'nvim-lua/plenary.nvim',
     'MunifTanjim/nui.nvim',
-    -- picker of your choice (already have telescope)
-    'nvim-telescope/telescope.nvim',
+    'folke/snacks.nvim',
   },
   opts = {
     ---------------------------------
@@ -19,7 +18,7 @@ return {
       position = 'left',
       width = '40%',
     },
-    picker = { provider = 'telescope' }, -- use the familiar ⌘-T finder
+    picker = { provider = 'snacks' },
     plugins = {
       non_standalone = false, -- set true if you'll *always* run :Leet inside a normal session
     },

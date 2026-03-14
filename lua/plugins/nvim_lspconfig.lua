@@ -16,15 +16,15 @@ return {
           vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
         end
 
-        map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
-        map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
-        map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-        map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-        map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-        map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-        map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
-        map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols')
-        map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
+        -- grn (rename), gra (code action), grr (references), grD (declaration)
+        -- are Neovim 0.11 defaults — no need to map them
+
+        -- Override with snacks.picker for richer UI
+        map('grd', function() Snacks.picker.lsp_definitions() end, '[G]oto [D]efinition')
+        map('gri', function() Snacks.picker.lsp_implementations() end, '[G]oto [I]mplementation')
+        map('gO', function() Snacks.picker.lsp_symbols() end, 'Open Document Symbols')
+        map('gW', function() Snacks.picker.lsp_workspace_symbols() end, 'Open Workspace Symbols')
+        map('grt', function() Snacks.picker.lsp_type_definitions() end, '[G]oto [T]ype Definition')
 
         -- Document highlight on CursorHold
         local client = vim.lsp.get_client_by_id(event.data.client_id)
