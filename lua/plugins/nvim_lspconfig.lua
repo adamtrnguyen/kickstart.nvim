@@ -107,6 +107,9 @@ return {
           },
         },
       },
+      clangd = {
+        cmd = { 'clangd', '--background-index', '--clang-tidy' },
+      },
       lua_ls = {
         settings = {
           Lua = {

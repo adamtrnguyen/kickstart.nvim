@@ -11,9 +11,8 @@ return {
           vim.notify('No file to run', vim.log.levels.WARN)
           return
         end
-        Snacks.terminal.open('uv run python ' .. vim.fn.shellescape(file), {
+        Snacks.terminal.toggle('uv run python ' .. vim.fn.shellescape(file), {
           win = { position = 'bottom', height = 0.3 },
-          interactive = false,
         })
       end,
       desc = '[R]un file with uv',

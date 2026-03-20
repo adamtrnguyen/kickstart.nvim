@@ -1,10 +1,12 @@
 return {
   'xeluxee/competitest.nvim',
-  cmd = {
-    'CompetiTest',
-    'CompetiTestAdd',
-    'CompetiTestRun',
-    'CompetiTestReceive',
+  cmd = { 'CompetiTest' },
+  keys = {
+    { '<leader>cr', '<cmd>CompetiTest run<cr>', desc = 'CP: Run tests' },
+    { '<leader>ca', '<cmd>CompetiTest add_testcase<cr>', desc = 'CP: Add testcase' },
+    { '<leader>ce', '<cmd>CompetiTest edit_testcase<cr>', desc = 'CP: Edit testcase' },
+    { '<leader>cp', '<cmd>CompetiTest receive problem<cr>', desc = 'CP: Receive problem' },
+    { '<leader>cc', '<cmd>CompetiTest receive contest<cr>', desc = 'CP: Receive contest' },
   },
   dependencies = 'MunifTanjim/nui.nvim',
   config = function()
@@ -16,12 +18,16 @@ return {
         cpp = {
           exec = 'g++-15', -- homebrew GCC
           args = {
-            '-std=c++17', -- or -std=c++20
-            '-O2',
-            '-pipe',
-            '$(FNAME)', -- e.g. "Broken Necklace.cpp"
+            '-std=c++17',
+            '-Wall',
+            '-Wextra',
+            '-Wshadow',
+            '-fsanitize=address,undefined',
+            '-g',
+            '-DLOCAL',
+            '$(FNAME)',
             '-o',
-            '$(FNOEXT)', -- e.g. "Broken Necklace"
+            '$(FNOEXT)',
           },
         },
         -- For Python you usually don't need a compile step.
@@ -35,8 +41,7 @@ return {
       -- === HOW TO RUN ===
       run_command = {
         cpp = {
-          exec = './$(FNOEXT)', -- run your compiled binary
-          args = { '<', '$(FNOEXT)_input$(TCNUM).txt' }, -- feeds sample input files
+          exec = './$(FNOEXT)',
         },
         python = {
           exec = 'python3',
@@ -54,7 +59,10 @@ return {
       -- === UI / RECEIVE SETTINGS ===
       start_receiving_persistently_on_setup = false, -- manual `:CompetiTestReceive`
       received_files_extension = 'cpp',
-      template_file = false, -- no auto‐template
+      template_file = {
+        cpp = vim.fn.stdpath 'config' .. '/templates/cp.cpp',
+      },
+      evaluate_template_modifiers = false,
     }
   end,
 }
