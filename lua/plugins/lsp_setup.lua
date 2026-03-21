@@ -1,13 +1,13 @@
 return {
-  'neovim/nvim-lspconfig',
+  'mason-org/mason.nvim',
   dependencies = {
-    { 'mason-org/mason.nvim', opts = {} },
-    'mason-org/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     { 'j-hui/fidget.nvim', opts = {} },
     'saghen/blink.cmp',
   },
   config = function()
+    require('mason').setup()
+
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
       callback = function(event)
@@ -16,15 +16,15 @@ return {
           vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
         end
 
-        map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
-        map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
-        map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
-        map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
-        map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-        map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-        map('gO', require('telescope.builtin').lsp_document_symbols, 'Open Document Symbols')
-        map('gW', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Open Workspace Symbols')
-        map('grt', require('telescope.builtin').lsp_type_definitions, '[G]oto [T]ype Definition')
+        -- grn (rename), gra (code action), grr (references), grD (declaration)
+        -- are Neovim 0.11 defaults — no need to map them
+
+        -- Override with snacks.picker for richer UI
+        map('grd', function() Snacks.picker.lsp_definitions() end, '[G]oto [D]efinition')
+        map('gri', function() Snacks.picker.lsp_implementations() end, '[G]oto [I]mplementation')
+        map('gO', function() Snacks.picker.lsp_symbols() end, 'Open Document Symbols')
+        map('gW', function() Snacks.picker.lsp_workspace_symbols() end, 'Open Workspace Symbols')
+        map('grt', function() Snacks.picker.lsp_type_definitions() end, '[G]oto [T]ype Definition')
 
         -- Document highlight on CursorHold
         local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -81,57 +81,21 @@ return {
       virtual_text = { source = 'if_many', spacing = 2 },
     }
 
-    local capabilities = require('blink.cmp').get_lsp_capabilities()
+    -- Set global capabilities from blink.cmp for all LSP servers
+    vim.lsp.config('*', {
+      capabilities = require('blink.cmp').get_lsp_capabilities(),
+    })
 
-    local servers = {
-      basedpyright = {
-        settings = {
-          basedpyright = {
-            analysis = {
-              typeCheckingMode = 'basic',
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true,
-              diagnosticMode = 'openFilesOnly',
-            },
-          },
-        },
-      },
-      ruff = {
-        -- Disable hover in favor of basedpyright
-        on_attach = function(client, _)
-          client.server_capabilities.hoverProvider = false
-        end,
-        init_options = {
-          settings = {
-            lineLength = 100,
-          },
-        },
-      },
-      clangd = {
-        cmd = { 'clangd', '--background-index', '--clang-tidy' },
-      },
-      lua_ls = {
-        settings = {
-          Lua = {
-            completion = { callSnippet = 'Replace' },
-          },
-        },
-      },
-    }
+    -- Enable native LSP servers (configured in lsp/*.lua)
+    vim.lsp.enable({ 'basedpyright', 'ruff', 'lua_ls', 'clangd' })
 
-    local ensure_installed = vim.tbl_keys(servers or {})
-    vim.list_extend(ensure_installed, { 'stylua' })
-    require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
-    require('mason-lspconfig').setup {
-      ensure_installed = {},
-      automatic_installation = false,
-      handlers = {
-        function(server_name)
-          local server = servers[server_name] or {}
-          server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-          require('lspconfig')[server_name].setup(server)
-        end,
+    -- Ensure tools are installed via Mason
+    require('mason-tool-installer').setup {
+      ensure_installed = {
+        'basedpyright',
+        'ruff',
+        'lua-language-server',
+        'stylua',
       },
     }
   end,
