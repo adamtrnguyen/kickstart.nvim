@@ -87,7 +87,7 @@ return {
     })
 
     -- Enable native LSP servers (configured in lsp/*.lua)
-    vim.lsp.enable({ 'basedpyright', 'ruff', 'lua_ls', 'clangd' })
+    vim.lsp.enable({ 'basedpyright', 'ruff', 'lua_ls', 'clangd', 'texlab', 'ltex_plus' })
 
     -- Ensure tools are installed via Mason
     require('mason-tool-installer').setup {
@@ -96,6 +96,8 @@ return {
         'ruff',
         'lua-language-server',
         'stylua',
+        'texlab',
+        'ltex-ls-plus',
       },
     }
   end,
