@@ -49,6 +49,11 @@ return {
           })
         end
 
+        -- LSP document colors (built-in colorizer, 0.12+)
+        if client and client:supports_method('textDocument/documentColor') then
+          vim.lsp.document_color.enable(true, event.buf)
+        end
+
         -- Toggle inlay hints
         if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
           map('<leader>th', function()

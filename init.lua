@@ -53,6 +53,17 @@ vim.o.cursorline = true
 vim.o.scrolloff = 10
 vim.o.confirm = true
 
+-- 0.12 features
+vim.o.pumborder = 'single'     -- border on completion popup
+
+-- 0.12 ui2: new cmdline/messages UI (no more "Press ENTER")
+vim.api.nvim_create_autocmd('UIEnter', {
+  once = true,
+  callback = function()
+    require('vim._core.ui2').enable()
+  end,
+})
+
 -- Auto-reload files changed outside of nvim
 vim.o.autoread = true
 vim.api.nvim_create_autocmd({ 'FocusGained', 'BufEnter', 'CursorHold' }, {
@@ -66,18 +77,18 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
--- Diagnostic navigation
+-- Diagnostic navigation (vim.diagnostic.jump — replaces deprecated goto_next/goto_prev)
 vim.keymap.set('n', ']e', function()
-  vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+  vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
 end, { desc = 'Next [E]rror' })
 vim.keymap.set('n', '[e', function()
-  vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+  vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
 end, { desc = 'Prev [E]rror' })
 vim.keymap.set('n', ']w', function()
-  vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
+  vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.WARN })
 end, { desc = 'Next [W]arning' })
 vim.keymap.set('n', '[w', function()
-  vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARN })
+  vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.WARN })
 end, { desc = 'Prev [W]arning' })
 
 -- NOTE: <C-hjkl> window nav is handled by vim-tmux-navigator plugin
