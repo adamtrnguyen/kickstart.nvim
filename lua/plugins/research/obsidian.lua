@@ -1,6 +1,9 @@
 -- lua/plugins/obsidian.lua
 return {
-  'epwalsh/obsidian.nvim',
+  -- Migrated from epwalsh/obsidian.nvim 2026-09-13: upstream's last push was
+  -- 2026-06-04 while this community fork is pushed to daily. Not archived,
+  -- just no longer where the work happens.
+  'obsidian-nvim/obsidian.nvim',
   version = '*',
   ft = 'markdown',
   dependencies = {

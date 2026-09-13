@@ -25,8 +25,12 @@ return {
     -- Compiler: latexmk (continuous)
     ------------------------------------------------------------------
     vim.g.vimtex_compiler_method = 'latexmk'
+    -- NOTE: `build_dir` is NOT a vimtex option and was silently ignored, so aux
+    -- and output files were landing next to the .tex. The real keys are
+    -- `aux_dir` and `out_dir` (doc/vimtex.txt, g:vimtex_compiler_latexmk).
     vim.g.vimtex_compiler_latexmk = {
-      build_dir = 'build',
+      aux_dir = 'build',
+      out_dir = 'build',
       continuous = 1,
       callback = 1,
       options = {
