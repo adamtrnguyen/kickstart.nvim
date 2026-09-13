@@ -60,7 +60,7 @@ vim.o.pumborder = 'single'     -- border on completion popup
 vim.api.nvim_create_autocmd('UIEnter', {
   once = true,
   callback = function()
-    require('vim._core.ui2').enable()
+    require('vim._core.ui2').enable({})
   end,
 })
 
