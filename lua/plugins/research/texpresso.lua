@@ -10,8 +10,11 @@ return {
 
     -- Optional: open TeXpresso for the root file you choose
     vim.keymap.set('n', '<leader>tp', function()
-      -- launches for current file; change to "main.tex" if you work in subfiles
-      vim.cmd 'TeXpresso %'
+      -- TeXpresso searches beside the document; include the project root
+      -- so reviews/ can use a shared .sty file in its parent directory.
+      local file = vim.api.nvim_buf_get_name(0)
+      local root = vim.fs.root(file, { '.latexmkrc', 'latexmkrc', '.git' }) or vim.fs.dirname(file)
+      require('texpresso').launch { '-I', root, file }
     end, { desc = 'TeXpresso preview' })
 
     -- Most common cause of black window: wrong working directory.
