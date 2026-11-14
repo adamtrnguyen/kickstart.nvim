@@ -2,11 +2,12 @@ return {
   'xeluxee/competitest.nvim',
   cmd = { 'CompetiTest' },
   keys = {
-    { '<leader>cr', '<cmd>CompetiTest run<cr>', desc = 'CP: Run tests' },
-    { '<leader>ca', '<cmd>CompetiTest add_testcase<cr>', desc = 'CP: Add testcase' },
-    { '<leader>ce', '<cmd>CompetiTest edit_testcase<cr>', desc = 'CP: Edit testcase' },
-    { '<leader>cp', '<cmd>CompetiTest receive problem<cr>', desc = 'CP: Receive problem' },
-    { '<leader>cc', '<cmd>CompetiTest receive contest<cr>', desc = 'CP: Receive contest' },
+    -- Under <leader>p, not <leader>c: `ca` and `cr` collided with claudecode.nvim.
+    { '<leader>pr', '<cmd>CompetiTest run<cr>', desc = 'CP: Run tests' },
+    { '<leader>pa', '<cmd>CompetiTest add_testcase<cr>', desc = 'CP: Add testcase' },
+    { '<leader>pe', '<cmd>CompetiTest edit_testcase<cr>', desc = 'CP: Edit testcase' },
+    { '<leader>pp', '<cmd>CompetiTest receive problem<cr>', desc = 'CP: Receive problem' },
+    { '<leader>pc', '<cmd>CompetiTest receive contest<cr>', desc = 'CP: Receive contest' },
   },
   dependencies = 'MunifTanjim/nui.nvim',
   config = function()

@@ -7,7 +7,7 @@ return {
     terminal = {
       provider = 'none',
     },
-    diff = {
+    diff_opts = {
       layout = 'vertical',
     },
   },

@@ -18,7 +18,7 @@ return {
       position = 'left',
       width = '40%',
     },
-    picker = { provider = 'snacks' },
+    picker = { provider = 'snacks-picker' },
     plugins = {
       non_standalone = false, -- set true if you'll *always* run :Leet inside a normal session
     },

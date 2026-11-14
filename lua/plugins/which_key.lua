@@ -48,7 +48,7 @@ return { -- Useful plugin to show you pending keybinds.
       { '<leader>t', group = '[T]oggle' },
       { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       { '<leader>c', group = '[C]laude Code' },
-      { '<leader>o', group = '[O]pen LLM' },
+      { '<leader>p', group = 'Competitive [P]rogramming' },
       { '<leader>r', group = '[R]un' },
       { '<leader>x', group = 'Diagnostics (Trouble)' },
       { '<leader>g', group = '[G]it' },
