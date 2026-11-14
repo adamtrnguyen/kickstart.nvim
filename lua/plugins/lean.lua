@@ -1,10 +1,6 @@
 return {
   'Julian/lean.nvim',
   event = { 'BufReadPre *.lean', 'BufNewFile *.lean' },
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-    'saghen/blink.cmp',
-  },
   -- Migrated 2026-09-13 from `opts = { mappings = true }`.
   --
   -- `require('lean').setup()` is deprecated and is removed in v2026.9.1

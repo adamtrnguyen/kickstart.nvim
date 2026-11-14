@@ -7,7 +7,6 @@ return {
     -- General
     ------------------------------------------------------------------
     vim.g.maplocalleader = ' ' -- so <Space>ll, <Space>lv, etc.
-    vim.g.tex_flavor = 'latex'
     vim.g.vimtex_syntax_enabled = 1
     vim.opt.conceallevel = 0 -- show raw LaTeX; set 2 if you prefer pretty math
 

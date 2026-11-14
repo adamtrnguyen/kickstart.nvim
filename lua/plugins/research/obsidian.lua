@@ -6,23 +6,18 @@ return {
   'obsidian-nvim/obsidian.nvim',
   version = '*',
   ft = 'markdown',
-  dependencies = {
-    'nvim-lua/plenary.nvim',
-    { 'hrsh7th/nvim-cmp', optional = true },
-  },
-  opts = function()
-    local has_cmp = pcall(require, 'cmp')
-    return {
-      workspaces = {
-        {
-          name = 'notes',
-          path = '/Users/adam/Library/CloudStorage/OneDrive-Personal/Obsidian Vault',
-        },
+  -- No dependencies: plenary is no longer needed, and completion is provided by
+  -- the plugin's built-in obsidian-ls LSP server, which replaced the deprecated
+  -- `completion.nvim_cmp` option.
+  opts = {
+    workspaces = {
+      {
+        name = 'notes',
+        path = '/Users/adam/Library/CloudStorage/OneDrive-Personal/Obsidian Vault',
       },
-      completion = { nvim_cmp = has_cmp },
-      ui = { enable = true },
-    }
-  end,
+    },
+    ui = { enable = true },
+  },
   config = function(_, opts)
     require('obsidian').setup(opts)
 
