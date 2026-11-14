@@ -3,17 +3,31 @@ return {
   dependencies = {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     { 'j-hui/fidget.nvim', opts = {} },
+    -- Listed so it loads first: blink.cmp registers its completion capabilities
+    -- for every server (`vim.lsp.config('*', ...)`) as it loads, and that has to
+    -- happen before `vim.lsp.enable()` below.
     'saghen/blink.cmp',
   },
   config = function()
     require('mason').setup()
+
+    -- Inlay hints: on by default, hidden while typing (they shift on every
+    -- keystroke), and switched off or back on with <leader>th.
+    local inlay_hints = true
+    vim.lsp.inlay_hint.enable(inlay_hints)
+    vim.api.nvim_create_autocmd('InsertEnter', {
+      callback = function() vim.lsp.inlay_hint.enable(false) end,
+    })
+    vim.api.nvim_create_autocmd('InsertLeave', {
+      callback = function() vim.lsp.inlay_hint.enable(inlay_hints) end,
+    })
 
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
       callback = function(event)
         local map = function(keys, func, desc, mode)
           mode = mode or 'n'
-          vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+          vim.keymap.set(mode, keys, func, { buf = event.buf, desc = 'LSP: ' .. desc })
         end
 
         -- grn (rename), gra (code action), grr (references), grD (declaration)
@@ -26,49 +40,18 @@ return {
         map('gW', function() Snacks.picker.lsp_workspace_symbols() end, 'Open Workspace Symbols')
         map('grt', function() Snacks.picker.lsp_type_definitions() end, '[G]oto [T]ype Definition')
 
-        -- Document highlight on CursorHold
+        -- Not set up here on purpose: highlighting the references under the
+        -- cursor is done by snacks.words (snacks.lua), and LSP document colors
+        -- are on by default since Neovim 0.12.
+
         local client = vim.lsp.get_client_by_id(event.data.client_id)
-        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
-          local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
-          vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-            buffer = event.buf,
-            group = highlight_augroup,
-            callback = vim.lsp.buf.document_highlight,
-          })
-          vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-            buffer = event.buf,
-            group = highlight_augroup,
-            callback = vim.lsp.buf.clear_references,
-          })
-          vim.api.nvim_create_autocmd('LspDetach', {
-            group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
-            callback = function(event2)
-              vim.lsp.buf.clear_references()
-              vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
-            end,
-          })
-        end
-
-        -- LSP document colors (built-in colorizer, 0.12+)
-        if client and client:supports_method('textDocument/documentColor') then
-          vim.lsp.document_color.enable(true, event.buf)
-        end
-
-        -- Toggle inlay hints
         if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
           map('<leader>th', function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+            inlay_hints = not inlay_hints
+            vim.lsp.inlay_hint.enable(inlay_hints)
           end, '[T]oggle Inlay [H]ints')
         end
       end,
-    })
-
-    -- Disable inlay hints in insert mode (they fire on every keystroke)
-    vim.api.nvim_create_autocmd('InsertEnter', {
-      callback = function() vim.lsp.inlay_hint.enable(false) end,
-    })
-    vim.api.nvim_create_autocmd('InsertLeave', {
-      callback = function() vim.lsp.inlay_hint.enable(true) end,
     })
 
     vim.diagnostic.config {
@@ -85,11 +68,6 @@ return {
       },
       virtual_text = { source = 'if_many', spacing = 2 },
     }
-
-    -- Set global capabilities from blink.cmp for all LSP servers
-    vim.lsp.config('*', {
-      capabilities = require('blink.cmp').get_lsp_capabilities(),
-    })
 
     -- Enable native LSP servers (configured in lsp/*.lua)
     vim.lsp.enable({ 'basedpyright', 'ruff', 'lua_ls', 'clangd', 'texlab', 'ltex_plus' })
