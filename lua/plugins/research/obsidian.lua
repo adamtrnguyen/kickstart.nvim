@@ -1,4 +1,6 @@
 -- lua/plugins/obsidian.lua
+local vault = '/Users/adam/Library/CloudStorage/OneDrive-Personal/Obsidian Vault'
+
 return {
   -- Migrated from epwalsh/obsidian.nvim 2026-09-13: upstream's last push was
   -- 2026-06-04 while this community fork is pushed to daily. Not archived,
@@ -6,6 +8,13 @@ return {
   'obsidian-nvim/obsidian.nvim',
   version = '*',
   ft = 'markdown',
+  -- Not every machine has the vault. obsidian.nvim refuses to set up without
+  -- a workspace ("At least one workspace is required!"), so where the folder
+  -- is absent the plugin is not loaded. `cond`, not `enabled`: lazy.nvim keeps
+  -- it installed.
+  cond = function()
+    return vim.uv.fs_stat(vault) ~= nil
+  end,
   -- No dependencies: plenary is no longer needed, and completion is provided by
   -- the plugin's built-in obsidian-ls LSP server, which replaced the deprecated
   -- `completion.nvim_cmp` option.
@@ -13,7 +22,7 @@ return {
     workspaces = {
       {
         name = 'notes',
-        path = '/Users/adam/Library/CloudStorage/OneDrive-Personal/Obsidian Vault',
+        path = vault,
       },
     },
     ui = { enable = true },
