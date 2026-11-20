@@ -70,13 +70,16 @@ return {
     }
 
     -- Enable native LSP servers (configured in lsp/*.lua)
-    vim.lsp.enable({ 'basedpyright', 'ruff', 'lua_ls', 'clangd', 'texlab', 'ltex_plus' })
+    -- Python has two type servers and each buffer gets one: ty where the repo pins
+    -- it in its virtualenv, basedpyright everywhere else (lsp/ty.lua).
+    vim.lsp.enable({ 'basedpyright', 'ty', 'ruff', 'ts_ls', 'lua_ls', 'clangd', 'texlab', 'ltex_plus' })
 
     -- Ensure tools are installed via Mason
     require('mason-tool-installer').setup {
       ensure_installed = {
         'basedpyright',
         'ruff',
+        'typescript-language-server',
         'lua-language-server',
         'stylua',
         'texlab',

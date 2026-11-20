@@ -1,3 +1,9 @@
+-- The repo's own ruff when its virtualenv pins one, otherwise Mason's: a different
+-- ruff version can sort imports and format differently from the repo's gate.
+local function repo_ruff(_, ctx)
+  return require('repo_venv').find(ctx.dirname, 'ruff') or 'ruff'
+end
+
 return { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -33,6 +39,11 @@ return { -- Autoformat
         cpp = { 'clang-format' },
         c = { 'clang-format' },
         python = { 'ruff_fix', 'ruff_organize_imports', 'ruff_format' },
+      },
+      formatters = {
+        ruff_fix = { command = repo_ruff },
+        ruff_organize_imports = { command = repo_ruff },
+        ruff_format = { command = repo_ruff },
       },
     },
 }
